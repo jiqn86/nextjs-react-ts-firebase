@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState} from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth';
 import { auth } from "../config/firebas";
 
 const AuthContext = createContext<any>({});
@@ -36,11 +36,15 @@ export const AuthContextProvider = ({children}: {children: ReactNode}) => {
         return signInWithEmailAndPassword(auth, email, password)
     }
 
+    const googleSignIn = (): Promise<any>  => {
+        return signInWithPopup(auth, new GoogleAuthProvider)
+    }
+
     const logout = async () => {
         setUser(null)
         await signOut(auth)
     } 
 
 
-    return <AuthContext.Provider value={{user, signup, login, logout}}>{loading ? null : children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{user, signup, login, logout, googleSignIn}}>{loading ? null : children}</AuthContext.Provider>
 }
